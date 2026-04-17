@@ -1,0 +1,237 @@
+---
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.DUE ===========
+  id: 156687456003292034508
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.DUE
+
+  subscription: 
+    version-number: 15754966206229
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Overdue ======================================
+    id: 156687456422348034508
+    entry: 
+      sequence: 1
+      display: Overdue
+      return: '|0'
+
+  - # ====== Entry: Next hour ====================================
+    id: 156687456819122034509
+    entry: 
+      sequence: 2
+      display: Next hour
+      return: 0|1
+
+  - # ====== Entry: Next 24 hours ================================
+    id: 156687457215393034509
+    entry: 
+      sequence: 3
+      display: Next 24 hours
+      return: 1|24
+
+  - # ====== Entry: Next 7 days ==================================
+    id: 156687457658035034509
+    entry: 
+      sequence: 4
+      display: Next 7 days
+      return: 24|168
+
+  - # ====== Entry: Next 30 days =================================
+    id: 156687458036427034510
+    entry: 
+      sequence: 5
+      display: Next 30 days
+      return: 168|720
+
+  - # ====== Entry: More than 30 days ============================
+    id: 156687458415597034510
+    entry: 
+      sequence: 6
+      display: More than 30 days
+      return: 720|
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.TYPE ==========
+  id: 156687459258133034511
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.TYPE
+
+  subscription: 
+    version-number: 15754966206252
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_human_task.get_lov_type )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.PRIORITY ======
+  id: 156687460412313034513
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.PRIORITY
+
+  subscription: 
+    version-number: 15754966206320
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_human_task.get_lov_priority )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.STATE =========
+  id: 156687461123405034514
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.STATE
+
+  subscription: 
+    version-number: 15754966206347
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_human_task.get_lov_state )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.INITIATED =====
+  id: 156687463074784034517
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.INITIATED
+
+  subscription: 
+    version-number: 15754966206554
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Last hour ====================================
+    id: 156687463379061034517
+    entry: 
+      sequence: 1
+      display: Last hour
+      return: '|1'
+
+  - # ====== Entry: Last 24 hours ================================
+    id: 156687463723243034518
+    entry: 
+      sequence: 2
+      display: Last 24 hours
+      return: 1|24
+
+  - # ====== Entry: Last 7 days ==================================
+    id: 156687464194368034518
+    entry: 
+      sequence: 3
+      display: Last 7 days
+      return: 24|168
+
+  - # ====== Entry: Last 30 days =================================
+    id: 156687464506333034519
+    entry: 
+      sequence: 4
+      display: Last 30 days
+      return: 168|720
+
+  - # ====== Entry: Older than 30 days ===========================
+    id: 156687464938454034519
+    entry: 
+      sequence: 5
+      display: Older than 30 days
+      return: 720|
+
+- # ====== List of Values: WORKFLOW_CONSOLE.LOV.WORKFLOW_STATE =
+  id: 156687771633862040600
+  identification: 
+    name: WORKFLOW_CONSOLE.LOV.WORKFLOW_STATE
+
+  subscription: 
+    version-number: 15754966397937
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_workflow.get_lov_workflow_state )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: WORKFLOW_CONSOLE.LOV.INITIATED ======
+  id: 156687773123033040601
+  identification: 
+    name: WORKFLOW_CONSOLE.LOV.INITIATED
+
+  subscription: 
+    version-number: 15754966398029
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Last hour ====================================
+    id: 156687773498700040602
+    entry: 
+      sequence: 1
+      display: Last hour
+      return: '|1'
+
+  - # ====== Entry: Last 24 hours ================================
+    id: 156687773842986040602
+    entry: 
+      sequence: 2
+      display: Last 24 hours
+      return: 1|24
+
+  - # ====== Entry: Last 7 days ==================================
+    id: 156687774232719040602
+    entry: 
+      sequence: 3
+      display: Last 7 days
+      return: 24|168
+
+  - # ====== Entry: Last 30 days =================================
+    id: 156687774612767040603
+    entry: 
+      sequence: 4
+      display: Last 30 days
+      return: 168|720
+
+  - # ====== Entry: Older than 30 days ===========================
+    id: 156687775011355040603
+    entry: 
+      sequence: 5
+      display: Older than 30 days
+      return: 720|
+

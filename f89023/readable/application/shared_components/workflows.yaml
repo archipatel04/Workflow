@@ -1,0 +1,563 @@
+---
+- # ====== Workflow: CHECK AMOUNT ==============================
+  id: 156636051342009402508
+  identification: 
+    name: CHECK AMOUNT
+    title: CHECK AMOUNT
+
+  advanced: 
+    static-id: CHECK_AMOUNT
+
+  parameters: 
+  - # ====== Parameter: Check Amount ID ==========================
+    id: 156636052040227402515
+    identification: 
+      static-id: CA_ID
+
+    label: 
+      label: Check Amount ID
+
+    parameter: 
+      data-type: NUMBER
+      direction: In
+
+    value: 
+      required: false
+
+  versions: 
+  - # ====== Version: 1.0 ========================================
+    id: 156636051431054402509
+    identification: 
+      workflow-version: 1.0
+
+    settings: 
+      state: In Development
+
+    activities: 
+    - # ====== Activity: Start =====================================
+      id: 156636051502802402510
+      identification: 
+        name: Start
+        type: Workflow Start
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 10
+
+      advanced: 
+        static-id: New
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636051881269402513
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: Start # 156636051502802402510
+          to: CHECK AMOUNT # 156636051613839402511
+
+    - # ====== Activity: CHECK AMOUNT ==============================
+      id: 156636051613839402511
+      identification: 
+        name: CHECK AMOUNT
+        type: Switch
+
+      switch: 
+        type: Case
+
+      compare: 
+        data-type: VARCHAR2
+        compare-type: SQL Query
+        compare-query: |
+          SELECT 
+              CASE
+                  WHEN AMOUNT >= 5000 THEN 'GREATER_AMOUNT'
+                  WHEN AMOUNT BETWEEN 2500 AND 5000 THEN 'AMOUNT_IN_BETWEEN'
+                  WHEN AMOUNT <= 5000 THEN 'LESS_AMOUNT'
+              END
+          FROM WORKFLOW_CHECK_AMOUNT
+          WHERE CA_ID = :CA_ID;
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 20
+
+      advanced: 
+        static-id: New_1
+
+      connections: 
+      - # ====== Connection: LESS ====================================
+        id: 156636052406494402519
+        identification: 
+          name: LESS
+
+        execution: 
+          sequence: 10
+
+        condition: 
+          operator: Is Equal To
+          value: LESS_AMOUNT
+
+        activity: 
+          to: LESS AMOUNT # 156636052161942402516
+
+      - # ====== Connection: BETWEEN =================================
+        id: 156636052512269402520
+        identification: 
+          name: BETWEEN
+
+        execution: 
+          sequence: 20
+
+        condition: 
+          operator: Is Equal To
+          value: AMOUNT_IN_BETWEEN
+
+        activity: 
+          to: AMOUNT IS BETWEEN # 156636052285562402517
+
+      - # ====== Connection: GREATER =================================
+        id: 156636052652061402521
+        identification: 
+          name: GREATER
+
+        execution: 
+          sequence: 30
+
+        condition: 
+          operator: Is Equal To
+          value: GREATER_AMOUNT
+
+        activity: 
+          to: GREATER AMOUNT # 156636052316116402518
+
+    - # ====== Activity: End =======================================
+      id: 156636051759192402512
+      identification: 
+        name: End
+        type: Workflow End
+
+      settings: 
+        end-state: Completed
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 30
+
+      advanced: 
+        static-id: New_2
+
+    - # ====== Activity: LESS AMOUNT ===============================
+      id: 156636052161942402516
+      identification: 
+        name: LESS AMOUNT
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          UPDATE WORKFLOW_CHECK_AMOUNT
+              SET
+                  TEXT = 'Amount is less than 5000'
+          WHERE CA_ID = :CA_ID;
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 40
+
+      advanced: 
+        static-id: New_3
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636053925047402534
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: LESS AMOUNT # 156636052161942402516
+          to: LESS AMOUNT MAIL # 156636053662005402531
+
+    - # ====== Activity: AMOUNT IS BETWEEN =========================
+      id: 156636052285562402517
+      identification: 
+        name: AMOUNT IS BETWEEN
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          UPDATE WORKFLOW_CHECK_AMOUNT
+              SET
+                  TEXT = 'Amount is between 2500 to 5000'
+          WHERE CA_ID = :CA_ID;
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 50
+
+      advanced: 
+        static-id: New_4
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636054263881402537
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: AMOUNT IS BETWEEN # 156636052285562402517
+          to: AMOUNT IS BETWEEN MAIL # 156636054199952402536
+
+    - # ====== Activity: GREATER AMOUNT ============================
+      id: 156636052316116402518
+      identification: 
+        name: GREATER AMOUNT
+        type: Human Task - Create
+
+      settings: 
+        definition: AMOUNT APPROVAL # 156676344887542143447
+        outcome: TASK_OUTCOME
+        owner: APPROVER
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 60
+
+      advanced: 
+        static-id: New_5
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636054675710402541
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: GREATER AMOUNT # 156636052316116402518
+          to: IS APPROVED? # 156636054530290402540
+
+      parameters: 
+      - # ====== Parameter: Amount ===================================
+        id: 156636053294361402527
+        identification: 
+          name: Amount # 156675021462991790297
+
+        value: 
+          type: Item
+          item: AMOUNT
+
+    - # ====== Activity: LESS AMOUNT MAIL ==========================
+      id: 156636053662005402531
+      identification: 
+        name: LESS AMOUNT MAIL
+        type: Send E-Mail
+
+      settings: 
+        from: '&APP_EMAIL.'
+        to: archipatel2632004@gmail.com
+        subject: 'Amount is Less '
+        body-plain-text: '&AMOUNT. is less than 5000.'
+        send-immediately: false
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 70
+
+      advanced: 
+        static-id: New_6
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636054033394402535
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: LESS AMOUNT MAIL # 156636053662005402531
+          to: End # 156636051759192402512
+
+    - # ====== Activity: AMOUNT IS BETWEEN MAIL ====================
+      id: 156636054199952402536
+      identification: 
+        name: AMOUNT IS BETWEEN MAIL
+        type: Send E-Mail
+
+      settings: 
+        from: '&APP_EMAIL.'
+        to: archipatel2632004@gmail.com
+        subject: Amount is between
+        body-plain-text: '&AMOUNT. is in between 2500 to 5000.'
+        send-immediately: false
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 80
+
+      advanced: 
+        static-id: New_7
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636054307972402538
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: AMOUNT IS BETWEEN MAIL # 156636054199952402536
+          to: End # 156636051759192402512
+
+    - # ====== Activity: IS APPROVED? ==============================
+      id: 156636054530290402540
+      identification: 
+        name: IS APPROVED?
+        type: Switch
+
+      switch: 
+        type: True False Check
+
+      condition: 
+        condition-type: Workflow Variable = Value
+        workflow-variable: TASK_OUTCOME
+        value: APPROVED
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 90
+
+      advanced: 
+        static-id: New_8
+
+      connections: 
+      - # ====== Connection: Reject ==================================
+        id: 156636054874637402543
+        identification: 
+          name: Reject
+
+        condition: 
+          when: False
+
+        activity: 
+          to: REJECTED AMOUNT # 156688301600411048002
+
+      - # ====== Connection: Approve =================================
+        id: 156636055142757402546
+        identification: 
+          name: Approve
+
+        condition: 
+          when: True
+
+        activity: 
+          to: APPROVED GREATER THAN 5000 # 156636055062285402545
+
+    - # ====== Activity: REJECTION MAIL ============================
+      id: 156636054771977402542
+      identification: 
+        name: REJECTION MAIL
+        type: Send E-Mail
+
+      settings: 
+        from: '&APP_EMAIL.'
+        to: archipatel2632004@gmail.com
+        subject: Rejection of Amount
+        body-plain-text: '&AMOUNT. is Rejected.'
+        send-immediately: false
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 100
+
+      advanced: 
+        static-id: New_9
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636054953575402544
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: REJECTION MAIL # 156636054771977402542
+          to: End # 156636051759192402512
+
+    - # ====== Activity: APPROVED GREATER THAN 5000 ================
+      id: 156636055062285402545
+      identification: 
+        name: APPROVED GREATER THAN 5000
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          UPDATE WORKFLOW_CHECK_AMOUNT
+              SET
+                  TEXT = 'Amount is Greater than 5000'
+          WHERE CA_ID = :CA_ID;
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 110
+
+      advanced: 
+        static-id: New_10
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636055446391402549
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: APPROVED GREATER THAN 5000 # 156636055062285402545
+          to: APPROVAL MAIL # 156636055250213402547
+
+    - # ====== Activity: APPROVAL MAIL =============================
+      id: 156636055250213402547
+      identification: 
+        name: APPROVAL MAIL
+        type: Send E-Mail
+
+      settings: 
+        from: '&APP_EMAIL.'
+        to: archipatel2632004@gmail.com
+        subject: Approval Email
+        body-plain-text: '&AMOUNT. is Approved.'
+        send-immediately: false
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 120
+
+      advanced: 
+        static-id: New_11
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156636055308969402548
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: APPROVAL MAIL # 156636055250213402547
+          to: End # 156636051759192402512
+
+    - # ====== Activity: REJECTED AMOUNT ===========================
+      id: 156688301600411048002
+      identification: 
+        name: REJECTED AMOUNT
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          UPDATE WORKFLOW_CHECK_AMOUNT
+              SET
+                  TEXT = 'Amount is Rejected'
+          WHERE CA_ID = :CA_ID;
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 130
+
+      advanced: 
+        static-id: New_12
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 156688301713712048003
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: REJECTED AMOUNT # 156688301600411048002
+          to: REJECTION MAIL # 156636054771977402542
+
+    variables: 
+    - # ====== Variable: Approver ==================================
+      id: 156636052786542402522
+      identification: 
+        static-id: APPROVER
+
+      label: 
+        label: Approver
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    - # ====== Variable: TaskOutcome ===============================
+      id: 156636052868780402523
+      identification: 
+        static-id: TASK_OUTCOME
+
+      label: 
+        label: TaskOutcome
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    - # ====== Variable: AMOUNT ====================================
+      id: 156636053802377402533
+      identification: 
+        static-id: AMOUNT
+
+      label: 
+        label: AMOUNT
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: SQL Query (return single value)
+        sql-query: |
+          SELECT AMOUNT 
+          FROM WORKFLOW_CHECK_AMOUNT
+          WHERE CA_ID = :CA_ID
+

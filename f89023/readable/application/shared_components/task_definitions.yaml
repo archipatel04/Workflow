@@ -1,0 +1,54 @@
+---
+- # ====== Task Definition: AMOUNT APPROVAL ====================
+  id: 156676344887542143447
+  identification: 
+    name: AMOUNT APPROVAL
+
+  settings: 
+    subject: Approval Amount &AMOUNT.
+    task-type: Approval Task
+    initiator-can-complete: N
+    priority: 3-Medium
+    details-page: 
+      url: 'f?p=&APP_ID.:7:&SESSION.::&DEBUG.:RP,7:P7_TASK_ID:&TASK_ID.'
+      page: 7 # Task Details
+      clear-cache: RP,7
+      values: 
+        p7_task_id: '&TASK_ID.'
+
+  deadline: 
+    due-on-type: None
+
+  source: 
+    table-owner: Parsing Schema
+
+  advanced: 
+    static-id: AMOUNT_APPROVAL
+
+  parameters: 
+  - # ====== Parameter: Amount ===================================
+    id: 156675021462991790297
+    identification: 
+      static-id: AMOUNT
+
+    label: 
+      label: Amount
+
+    value: 
+      data-type: String
+      required: true
+
+    advanced: 
+      show-on-task-details: true
+      updatable: false
+
+  participants: 
+  - # ====== Participant: Potential Owner ========================
+    id: 156675021094858790294
+    identification: 
+      type: Potential Owner
+
+    value: 
+      type: Static Value
+      static-value: MANAGER
+
